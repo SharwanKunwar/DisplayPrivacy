@@ -5,7 +5,6 @@ const RealPrivacy = () => {
   const [angle, setAngle] = useState(0);
   const [enabled, setEnabled] = useState(false);
 
-  // Enable gyroscope (needed for iPhone)
   const enableGyro = async () => {
     if (
       typeof DeviceOrientationEvent !== "undefined" &&
@@ -18,7 +17,7 @@ const RealPrivacy = () => {
         console.error(err);
       }
     } else {
-      setEnabled(true); // Android
+      setEnabled(true);
     }
   };
 
@@ -29,25 +28,31 @@ const RealPrivacy = () => {
       const beta = event.beta || 0;
       const gamma = event.gamma || 0;
 
+      // Calculate tilt strength
       const dist = Math.sqrt(beta * beta + gamma * gamma);
       const maxTilt = 90;
 
       const norm = Math.min(dist / maxTilt, 1);
 
-      // 🎯 5% threshold logic
-      const threshold = 0.05;
-      let adjusted = 0;
+      // Convert to angle (0 → 90)
+      const newAngle = norm * 90;
+      setAngle(Math.round(newAngle));
 
-      if (norm > threshold) {
-        adjusted = (norm - threshold) / (1 - threshold);
+      // 🎯 Your rule: 20° → start, 30° → fully hidden
+      const fadeStart = 20;
+      const fadeEnd = 30;
+
+      let newOpacity = 1;
+
+      if (newAngle <= fadeStart) {
+        newOpacity = 1;
+      } else if (newAngle >= fadeEnd) {
+        newOpacity = 0;
+      } else {
+        const progress = (newAngle - fadeStart) / (fadeEnd - fadeStart);
+        newOpacity = 1 - progress;
       }
 
-      const newAngle = norm * 90;
-
-      // Smooth fade after threshold
-      const newOpacity = 1 - Math.pow(adjusted, 2);
-
-      setAngle(Math.round(newAngle));
       setOpacity(newOpacity);
     };
 
@@ -67,12 +72,12 @@ const RealPrivacy = () => {
       )}
 
       <div style={{ ...styles.box, opacity }}>
-        <h2>Private Content</h2>
-        <p>Visible only when phone is straight</p>
+        <h2>Real Private Content</h2>
+        <p>This fades based on your phone angle.</p>
       </div>
 
       <div style={styles.info}>
-        <p>Angle: {angle}°</p>
+        <p>real Angle: {angle}°</p>
         <p>Opacity: {Math.round(opacity * 100)}%</p>
       </div>
     </div>
@@ -97,7 +102,7 @@ const styles = {
     padding: "20px",
     borderRadius: "12px",
     textAlign: "center",
-    transition: "opacity 0.15s ease",
+    transition: "opacity 0.15s linear",
   },
   info: {
     marginTop: "20px",
