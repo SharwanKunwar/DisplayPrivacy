@@ -5,7 +5,7 @@ const RealPrivacy = () => {
   const [angle, setAngle] = useState(0);
   const [enabled, setEnabled] = useState(false);
 
-  // Request permission (needed for iPhone)
+  // Enable gyroscope (needed for iPhone)
   const enableGyro = async () => {
     if (
       typeof DeviceOrientationEvent !== "undefined" &&
@@ -18,7 +18,7 @@ const RealPrivacy = () => {
         console.error(err);
       }
     } else {
-      setEnabled(true); // Android / others
+      setEnabled(true); // Android
     }
   };
 
@@ -26,20 +26,26 @@ const RealPrivacy = () => {
     if (!enabled) return;
 
     const handleOrientation = (event) => {
-      const beta = event.beta || 0;   // front-back tilt
-      const gamma = event.gamma || 0; // left-right tilt
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
 
-      // calculate tilt distance
       const dist = Math.sqrt(beta * beta + gamma * gamma);
-
       const maxTilt = 90;
+
       const norm = Math.min(dist / maxTilt, 1);
 
-      // convert to angle + opacity
+      // 🎯 5% threshold logic
+      const threshold = 0.05;
+      let adjusted = 0;
+
+      if (norm > threshold) {
+        adjusted = (norm - threshold) / (1 - threshold);
+      }
+
       const newAngle = norm * 90;
 
-      // opacity: straight = visible, tilt = hidden
-      const newOpacity = 1 - Math.pow(norm, 1.5);
+      // Smooth fade after threshold
+      const newOpacity = 1 - Math.pow(adjusted, 2);
 
       setAngle(Math.round(newAngle));
       setOpacity(newOpacity);
@@ -62,7 +68,7 @@ const RealPrivacy = () => {
 
       <div style={{ ...styles.box, opacity }}>
         <h2>Private Content</h2>
-        <p>Only visible when phone is straight 👀</p>
+        <p>Visible only when phone is straight</p>
       </div>
 
       <div style={styles.info}>
@@ -84,14 +90,14 @@ const styles = {
     justifyContent: "center",
   },
   box: {
-    width: "250px",
-    height: "150px",
+    width: "260px",
+    height: "160px",
     background: "#fff",
     color: "#000",
     padding: "20px",
-    borderRadius: "10px",
+    borderRadius: "12px",
     textAlign: "center",
-    transition: "opacity 0.1s linear",
+    transition: "opacity 0.15s ease",
   },
   info: {
     marginTop: "20px",
@@ -100,6 +106,8 @@ const styles = {
     marginBottom: "20px",
     padding: "10px 20px",
     cursor: "pointer",
+    borderRadius: "8px",
+    border: "none",
   },
 };
 
