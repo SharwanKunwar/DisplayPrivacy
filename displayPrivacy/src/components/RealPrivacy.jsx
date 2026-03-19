@@ -97,15 +97,15 @@ const RealPrivacy = () => {
     <div style={styles.container}>
       {/* Button required to activate gyroscope on some devices */}
       {!enabled && (
-        <button onClick={enableGyro} style={styles.button}>
-          Enable Gyroscope
+        <button onClick={enableGyro} style={styles.button} className="border!">
+          Enable Privacy model
         </button>
       )}
 
       {/* Content whose visibility depends on device tilt */}
-      <div style={{ ...styles.box, opacity }}>
-        <h2>Real Private Content</h2>
-        <p>This fades based on your phone angle.</p>
+      <div style={{ ...styles.box, opacity }} className="w-auto! ">
+        <h3 className="text-2xl py-2 font-medium underline">Real Private Content</h3>
+        
         <p className="text-indigo-400">The magic you are looking for is in the work you are avoiding.</p>
 
       </div>
@@ -114,6 +114,7 @@ const RealPrivacy = () => {
       <div style={styles.info}>
         <p>Angle: {angle}°</p>
         <p>Opacity: {Math.round(opacity * 100)}%</p>
+        <p className="text-[13px] text-neutral-400 mt-5! tracking-widest">This fades based on your phone angle.</p>
       </div>
     </div>
   );
