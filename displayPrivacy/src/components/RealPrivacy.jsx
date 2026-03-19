@@ -106,6 +106,8 @@ const RealPrivacy = () => {
       <div style={{ ...styles.box, opacity }}>
         <h2>Real Private Content</h2>
         <p>This fades based on your phone angle.</p>
+        <p className="text-indigo-400">The magic you are looking for is in the work you are avoiding.</p>
+
       </div>
 
       {/* Debug info (helps during testing and calibration) */}
