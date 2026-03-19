@@ -39,8 +39,8 @@ const RealPrivacy = () => {
       setAngle(Math.round(newAngle));
 
       // 🎯 Your rule: 20° → start, 30° → fully hidden
-      const fadeStart = 20;
-      const fadeEnd = 30;
+      const fadeStart = 16;
+      const fadeEnd = 20;
 
       let newOpacity = 1;
 
